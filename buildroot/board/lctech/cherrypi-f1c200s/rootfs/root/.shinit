@@ -1,0 +1,15 @@
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
+# if serial terminal, set rows/cols
+if [ "$TERM" == 'linux' ]; then
+    stty rows ${ROWS:-31} cols ${COLS:-100} 2>/dev/null
+fi
+
+# set a nice shiny color prompt
+export PS1='\[\e[0;32m\]\u\[\e[1;32m\]@\[\e[0;32m\]\h \[\e[0;94m\]\w \[\e[0;31m\]\#\[\e[00m\] '
+
+# aliases
+alias la='ls -Alhf --color=auto'
+alias ll='ls -alhF --color=auto'
+alias ls='ls --color=auto'
