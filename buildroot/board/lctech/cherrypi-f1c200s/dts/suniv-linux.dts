@@ -13,10 +13,7 @@
 		#size-cells = <1>;
 		ranges;
 
-		/* default nand partition layout */
-		bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio,0x1c25400 earlyprintk rootwait init=/preinit root=/dev/mtdblock3 rootfstype=squashfs overlayfsdev=/dev/mtdblock4";
-		/* my ubi partition layout */
-		//bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio,0x1c25400 earlyprintk rootwait init=/preinit root=/dev/ubi0_rootfs rootfstype=ubifs";
+		bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio,0x1c25400 earlyprintk rootfstype=ubifs ubi.mtd=ubi root=ubi0:rootfs rootwait init=/preinit ofstype=ubifs ofsdev=ubi0:rootfs_data";
 	};
 };
 
@@ -30,8 +27,7 @@
 		reg = <0>;
 		spi-max-frequency = <50000000>;
 
-		/* my nand UBI layout for later */
-		/* partitions {
+		partitions {
 			compatible = "fixed-partitions";
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -55,40 +51,6 @@
 			partition@3 {
 				label = "ubi";
 				reg = <0x800000 0x7800000>;
-			};
-		}; */
-
-		partitions {
-			compatible = "fixed-partitions";
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-			partition@0 {
-				label = "u-boot";
-				reg = <0x0 0xf0000>;
-				read-only;
-			};
-
-			partition@1 {
-				label = "u-boot-env";
-				reg = <0xf0000 0x10000>;
-			};
-
-			partition@2 {
-				label = "kernel";
-				reg = <0x100000 0x700000>;
-				read-only;
-			};
-
-			partition@3 {
-				label = "rootfs";
-				reg = <0x800000 0x2800000>;
-				read-only;
-			};
-
-			partition@4 {
-				label = "overlay";
-				reg = <0x4000000 0x5000000>;
 			};
 		};
 	};

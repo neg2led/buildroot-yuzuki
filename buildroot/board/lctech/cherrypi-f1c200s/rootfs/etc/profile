@@ -1,0 +1,34 @@
+export PATH="/bin:/sbin:/usr/bin:/usr/sbin"
+
+# If not running interactively, don't do anything else
+[ -z "$PS1" ] && return
+
+# if serial terminal, set rows/cols
+if [ "$TERM" == 'linux' ]; then
+    stty rows ${ROWS:-31} cols ${COLS:-100} 2>/dev/null
+fi
+
+# set a nice colorful prompt
+if [ "$PS1" ]; then
+    if [ "`id -u`" -eq 0 ]; then
+        export PS1='\[\e[0;32m\]\u\[\e[1;32m\]@\[\e[0;32m\]\h \[\e[0;94m\]\w \[\e[0;31m\]\#\[\e[00m\] '
+    else
+        export PS1='\[\e[0;32m\]\u\[\e[1;32m\]@\[\e[0;32m\]\h \[\e[0;94m\]\w \[\e[0;31m\]\$\[\e[00m\] '
+    fi
+fi
+
+# set default editor
+export EDITOR='nano'
+
+# Source configuration files from /etc/profile.d
+for i in /etc/profile.d/*.sh ; do
+    if [ -r "$i" ]; then
+        . $i
+    fi
+done
+unset i
+
+# source user's .shinit file
+if [ -r "$HOME/.shinit" ]; then
+    . "$HOME/.shinit"
+fi

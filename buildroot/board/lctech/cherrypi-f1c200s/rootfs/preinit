@@ -1,0 +1,57 @@
+#!/bin/sh
+mount proc /proc -t proc
+set -- $(cat /proc/cmdline)
+umount /proc
+for x in "$@"; do
+    case "$x" in
+        overlayfsdev=*)
+            OVERLAY_DEV="${x#ofsdev=}"
+        overlayfstype=*)
+            OVERLAY_TYPE="${x#ofstype=}"
+        ;;
+    esac
+done
+
+if [ -z "${OVERLAY_DEV}" ]; then
+    echo "ERROR: ofsdev=<device> not found in kernel command line Booting without overlay..."
+    exec /sbin/init
+fi
+
+if [ -z "${OVERLAY_TYPE}" ]; then
+    echo "ERROR: ofstype= not found in kernel command line Booting without overlay..."
+    exec /sbin/init
+fi
+
+case "${OVERLAY_TYPE}" in
+    ubi|ubifs)
+        if [ ! -f "${OVERLAY_DEV}" ]; then
+            OVERLAY_DEV=$(ubinfo -d 0 -N ${OVERLAY_DEV} | grep "ubi_name" | awk '{print $2}')
+        fi
+        mount -n -t ubifs -o rw,noatime "${OVERLAY_DEV}" /overlay
+        ;;
+    jffs2)
+        mount -n -t jffs2 -o rw,noatime "${OVERLAY_DEV}" /overlay
+        ;;
+    ext4)
+        mount -n -t ext4 -o rw,noatime "${OVERLAY_DEV}" /overlay
+        ;;
+    *)
+        echo "ERROR: ofstype= is set but is not ubi(fs), jffs2, or ext4. Booting without overlay..."
+        exec /sbin/init
+esac
+
+# make sure we mounted successfully and give up if not
+if [ -d /overlay ]; then
+    mkdir -p /overlay/rom/lower /overlay/rom/upper /overlay/rom/work
+    mount --rbind / /overlay/rom/lower
+    mount -n -t overlay overlayfs:/overlay/rom -o rw,noatime,lowerdir=/overlay/rom/lower,upperdir=/overlay/rom/upper,workdir=/overlay/rom/work /tmp
+    mount --rbind /dev /tmp/dev/
+    mount --rbind /overlay /tmp/overlay/
+    exec chroot /tmp /sbin/init
+else
+    echo "ERROR: /overlay failed to mount. Booting without overlay..."
+    exec /sbin/init
+fi
+
+# if all else fails - should never hit this.
+exec /sbin/init
