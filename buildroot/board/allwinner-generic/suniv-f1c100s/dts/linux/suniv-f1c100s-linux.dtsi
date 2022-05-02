@@ -373,9 +373,9 @@
 			};
 
 			spi1_pins: spi1-pins{
-                pins = "PA2", "PA0", "PA3", "PA1";
-                function = "spi1";
-            };
+				pins = "PA2", "PA0", "PA3", "PA1";
+				function = "spi1";
+			};
 
 			mmc0_pins: mmc0-pins {
 				pins = "PF0", "PF1", "PF2", "PF3", "PF4", "PF5";
@@ -409,7 +409,7 @@
 					"PE6","PE7", "PE8", "PE9", "PE10";
 				function = "csi";
 			};
-			
+
 			clk_out_pins: clk-out-pins {
 				pins = "PE11";
 				function = "clk0";
@@ -423,7 +423,7 @@
 
 			lcd_rgb565_pins: lcd-rgb565-pins {
 				pins = "PD1", "PD2", "PD3", "PD4", "PD5",
-					"PD6", "PD7", "PD8", "PD9", "PD10", "PD11", 
+					"PD6", "PD7", "PD8", "PD9", "PD10", "PD11",
 					"PD13", "PD14", "PD15", "PD16", "PD17",
 					"PD18", "PD19", "PD20", "PD21";
 				function = "lcd";
@@ -490,7 +490,7 @@
 				 <&ccu CLK_CODEC>;
 			clock-names = "apb", "codec";
 			resets = <&ccu RST_BUS_CODEC>;
-			dmas = <&dma SUN4I_DMA_NORMAL 0x0c>, 
+			dmas = <&dma SUN4I_DMA_NORMAL 0x0c>,
 				 <&dma SUN4I_DMA_NORMAL 0x0c>;
 			dma-names = "rx", "tx";
 			status = "disabled";
