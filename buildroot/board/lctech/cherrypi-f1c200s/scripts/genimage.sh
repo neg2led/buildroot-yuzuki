@@ -14,7 +14,7 @@ OUTPUT_NAME="kernel.itb"
     exit 1
 }
 
-cp ${BOARDDIR}/scripts/${IMAGE_ITS} "${BINARIES_DIR}/"
+cp ${BOARDDIR}/${IMAGE_ITS} "${BINARIES_DIR}/"
 cd "${BINARIES_DIR}"
 "${MKIMAGE}" -f ${IMAGE_ITS} ${OUTPUT_NAME} && rm ${IMAGE_ITS} || exit 1
 
