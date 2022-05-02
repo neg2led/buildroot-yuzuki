@@ -13,10 +13,10 @@
 		#size-cells = <1>;
 		ranges;
 
-		/* default partition layout */
-		bootargs = "console=ttyS0,115200 earlyprintk rootwait init=/preinit root=/dev/mtdblock2 rootfstype=squashfs overlayfsdev=/dev/mtdblock3";
+		/* default nand partition layout */
+		bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio,0x1c25400 earlyprintk rootwait init=/preinit root=/dev/mtdblock3 rootfstype=squashfs overlayfsdev=/dev/mtdblock4";
 		/* my ubi partition layout */
-		//bootargs = "console=ttyS0,115200 earlyprintk rootwait init=/preinit root=/dev/ubi0_rootfs rootfstype=ubifs";
+		//bootargs = "console=ttyS0,115200 earlycon=uart8250,mmio,0x1c25400 earlyprintk rootwait init=/preinit root=/dev/ubi0_rootfs rootfstype=ubifs";
 	};
 };
 
@@ -65,30 +65,30 @@
 
 			partition@0 {
 				label = "u-boot";
-				reg = <0x000000 0x100000>;
+				reg = <0x0 0xf0000>;
 				read-only;
 			};
 
 			partition@1 {
-				label = "kernel";
-				reg = <0x100000 0x500000>;
-				read-only;
+				label = "u-boot-env";
+				reg = <0xf0000 0x10000>;
 			};
 
 			partition@2 {
-				label = "rom";
-				reg = <0x600000 0x2a00000>;
+				label = "kernel";
+				reg = <0x100000 0x700000>;
 				read-only;
 			};
 
 			partition@3 {
-				label = "vendor";
-				reg = <0x3000000 0x1000000>;
+				label = "rootfs";
+				reg = <0x800000 0x2800000>;
+				read-only;
 			};
 
 			partition@4 {
 				label = "overlay";
-				reg = <0x4000000 0x3000000>;
+				reg = <0x4000000 0x5000000>;
 			};
 		};
 	};
@@ -102,7 +102,7 @@
 
 &spi1 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&spi1_pe_pins>;
+	pinctrl-0 = <&spi1_pins>;
 	status = "okay";
 };
 
